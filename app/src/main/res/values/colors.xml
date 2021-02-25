@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#1F3C73</color>
+    <color name="colorPrimaryDark">#145292</color>
+    <color name="colorAccent">#49C6F5</color>
+
+    <color name="calories_color">#FF9AA2</color>
+    <color name="standing_time_color">#6DC9C9</color>
+    <color name="distance_color">#D1A9B1</color>
+    <color name="steps_color">#F5BE6B</color>
+
+
+</resources>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="fitnessData"
+            type="com.googlefitdemo.FitnessDataResponse" />
+    </data>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rootLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            >
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.22" />
+
+            <RelativeLayout
+                android:id="@+id/rltRootCalories"
+                style="@style/widthW_heightW"
+                app:layout_constraintEnd_toStartOf="@+id/rltRootDistance"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/guideline"
+                android:layout_marginTop="@dimen/dp_20">
+
+                <ImageView
+                    android:id="@+id/imgRightTopCalories"
+                    style="@style/right_top_image"
+                    android:layout_toRightOf="@+id/imgTodayCalories"
+                    android:background="@drawable/pink_bg"
+                    android:backgroundTint="@color/calories_color"
+                    android:src="@drawable/calories" />
+
+                <ImageView
+                    android:id="@+id/imgTodayCalories"
+                    style="@style/today_label_image"
+                    android:layout_alignBottom="@+id/imgRightTopCalories" />
+
+                <RelativeLayout
+                    android:id="@+id/rltCalories"
+                    style="@style/value_relative"
+                    android:layout_alignLeft="@+id/imgTodayCalories"
+                    android:layout_alignTop="@+id/imgRightTopCalories"
+                    android:layout_alignRight="@+id/imgRightTopCalories">
+
+                    <ImageView
+                        android:id="@+id/imgCalories"
+                        style="@style/right_top_image"
+                        android:background="@drawable/pink_bg"
+                        android:backgroundTint="@color/standing_time_color"
+                        android:src="@drawable/standing_man"
+                        android:visibility="invisible" />
+
+                    <TextView
+                        android:id="@+id/txtCalories"
+                        style="@style/title_text_all_caps_size12"
+                        android:text="@string/calories"
+                        android:layout_below="@+id/imgCalories"
+                        android:textColor="@color/calories_color" />
+
+                    <TextView
+                        android:id="@+id/txtCaloriesValue"
+                        style="@style/value_text"
+                        android:text="@{``+fitnessData.calories}"
+                        android:layout_below="@+id/txtCalories"
+                        android:textColor="@color/calories_color" />
+
+                    <TextView
+                        style="@style/unit_text"
+                        android:layout_below="@+id/txtCaloriesValue"
+                        android:text="@string/kcal"
+                        android:textColor="@color/calories_color" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rltRootDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/rltRootCalories"
+                app:layout_constraintTop_toTopOf="@+id/rltRootCalories">
+
+                <ImageView
+                    android:id="@+id/imgRightTopDistance"
+                    style="@style/right_top_image"
+                    android:layout_toRightOf="@+id/imgTodayDistance"
+                    android:background="@drawable/pink_bg"
+                    android:backgroundTint="@color/distance_color"
+                    android:src="@drawable/distance" />
+
+                <ImageView
+                    android:id="@+id/imgTodayDistance"
+                    style="@style/today_label_image"
+                    android:layout_alignBottom="@+id/imgRightTopDistance" />
+
+                <RelativeLayout
+                    android:id="@+id/rltDistance"
+                    style="@style/value_relative"
+                    android:layout_alignLeft="@+id/imgTodayDistance"
+                    android:layout_alignTop="@+id/imgRightTopDistance"
+                    android:layout_alignRight="@+id/imgRightTopDistance">
+
+                    <ImageView
+                        android:id="@+id/imgDistance"
+                        style="@style/right_top_image"
+                        android:background="@drawable/pink_bg"
+                        android:backgroundTint="@color/standing_time_color"
+                        android:src="@drawable/standing_man"
+                        android:visibility="invisible" />
+
+                    <TextView
+                        android:id="@+id/txtDistance"
+                        style="@style/title_text_all_caps_size12"
+                        android:layout_below="@+id/imgDistance"
+                        android:text="@string/distance"
+                        android:textColor="@color/distance_color" />
+
+                    <TextView
+                        android:id="@+id/txtDistanceValue"
+                        style="@style/value_text"
+                        android:text="@{``+fitnessData.distance}"
+                        android:layout_below="@+id/txtDistance"
+                        android:textColor="@color/distance_color" />
+
+                    <TextView
+                        style="@style/unit_text"
+                        android:layout_below="@+id/txtDistanceValue"
+                        android:text="@string/mi"
+                        android:textColor="@color/distance_color" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rltRootSteps"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20"
+                app:layout_constraintStart_toStartOf="@+id/rltRootCalories"
+                app:layout_constraintTop_toBottomOf="@+id/rltRootCalories">
+
+                <ImageView
+                    android:id="@+id/imgRightTopSteps"
+                    style="@style/right_top_image"
+                    android:layout_toRightOf="@+id/imgTodaySteps"
+                    android:background="@drawable/pink_bg"
+                    android:backgroundTint="@color/steps_color"
+                    android:src="@drawable/steps" />
+
+                <ImageView
+                    android:id="@+id/imgTodaySteps"
+                    style="@style/today_label_image"
+                    android:layout_alignBottom="@+id/imgRightTopSteps" />
+
+                <RelativeLayout
+                    android:id="@+id/rltSteps"
+                    style="@style/value_relative"
+                    android:layout_alignLeft="@+id/imgTodaySteps"
+                    android:layout_alignTop="@+id/imgRightTopSteps"
+                    android:layout_alignRight="@+id/imgRightTopSteps">
+
+                    <ImageView
+                        android:id="@+id/imgSteps"
+                        style="@style/right_top_image"
+                        android:background="@drawable/pink_bg"
+                        android:src="@drawable/standing_man"
+                        android:visibility="invisible" />
+
+                    <TextView
+                        android:id="@+id/txtSteps"
+                        style="@style/title_text_all_caps_size12"
+                        android:layout_below="@+id/imgSteps"
+                        android:text="@string/steps"
+                        android:textColor="@color/steps_color" />
+
+                    <TextView
+                        android:id="@+id/txtStepsValue"
+                        style="@style/value_text"
+                        android:text="@{``+fitnessData.steps}"
+                        android:layout_below="@+id/txtSteps"
+                        android:textColor="@color/steps_color" />
+
+                    <TextView
+                        style="@style/unit_text"
+                        android:layout_below="@+id/txtStepsValue"
+                        android:text="@string/steps"
+                        android:textColor="@color/steps_color" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

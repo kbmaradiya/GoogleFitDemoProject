@@ -1,0 +1,19 @@
+com/googlefitdemo/databinding/ActivityMainBinding.java
+ com.googlefitdemo.databinding.ActivityMainBinding
+com/googlefitdemo/MainActivity.java
+ com.googlefitdemo.MainActivity
+com/googlefitdemo/utils/CommonUtils.java
+ com.googlefitdemo.utils.CommonUtils
+com/googlefitdemo/permissionUtil/Permissions.java
+ com.googlefitdemo.permissionUtil.Permissions
+com/googlefitdemo/FitnessDataResponse.java
+ com.googlefitdemo.FitnessDataResponse
+com/googlefitdemo/permissionUtil/PermissionManager.java
+ com.googlefitdemo.permissionUtil.PermissionManager
+ com.googlefitdemo.permissionUtil.PermissionManager$1
+ com.googlefitdemo.permissionUtil.PermissionManager$2
+ com.googlefitdemo.permissionUtil.PermissionManager$PermissionListener
+com/googlefitdemo/BuildConfig.java
+ com.googlefitdemo.BuildConfig
+com/googlefitdemo/DataBindingTriggerClass.java
+ com.googlefitdemo.DataBindingTriggerClass

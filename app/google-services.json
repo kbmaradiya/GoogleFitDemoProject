@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1016390600153",
+    "project_id": "vast-nectar-305406",
+    "storage_bucket": "vast-nectar-305406.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1016390600153:android:c9cd8a370c47e3ee67c5c8",
+        "android_client_info": {
+          "package_name": "com.googlefitdemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1016390600153-ipm640lf7o2d0kg7mdkl8uplnvevh8o6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5c3Pmo7Iwim7VlitxnyXFXusgHcfjtUg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1016390600153-ipm640lf7o2d0kg7mdkl8uplnvevh8o6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
