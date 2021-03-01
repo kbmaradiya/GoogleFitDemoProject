@@ -154,7 +154,7 @@ public class PermissionManager {
             // If sum not match then there are dialog/s to show user. Now request for runtime permission dialog
             if (grantedCount + neverAskedCount == perms.length) {
                 // Report "Never asked" permission, if any.
-                neverAskedDialog(object, listener, neveraskedperms);
+//                neverAskedDialog(object, listener, neveraskedperms);
                 //listener.onPermissionNeverAsked(neveraskedperms);
             } else {
                 executePermissionsRequest(object, perms, RUNTIME_PERMISSION);

@@ -100,7 +100,7 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     public boolean setVariable(int variableId, @Nullable Object variable)  {
         boolean variableSet = true;
         if (BR.fitnessData == variableId) {
-            setFitnessData((com.googlefitdemo.FitnessDataResponse) variable);
+            setFitnessData((com.googlefitdemo.FitnessDataResponseModel) variable);
         }
         else {
             variableSet = false;
@@ -108,7 +108,7 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
             return variableSet;
     }
 
-    public void setFitnessData(@Nullable com.googlefitdemo.FitnessDataResponse FitnessData) {
+    public void setFitnessData(@Nullable com.googlefitdemo.FitnessDataResponseModel FitnessData) {
         this.mFitnessData = FitnessData;
         synchronized(this) {
             mDirtyFlags |= 0x1L;
@@ -131,7 +131,7 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
             dirtyFlags = mDirtyFlags;
             mDirtyFlags = 0;
         }
-        com.googlefitdemo.FitnessDataResponse fitnessData = mFitnessData;
+        com.googlefitdemo.FitnessDataResponseModel fitnessData = mFitnessData;
         java.lang.String javaLangStringFitnessDataSteps = null;
         float fitnessDataSteps = 0f;
         float fitnessDataCalories = 0f;

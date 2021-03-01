@@ -7,6 +7,8 @@ import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -28,8 +30,8 @@ import com.googlefitdemo.utils.CommonUtils;
 
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
 
     private FitnessOptions fitnessOptions;
 
-    private FitnessDataResponse fitnessDataResponse;
+    private FitnessDataResponseModel fitnessDataResponseModel;
 
     private ActivityMainBinding activityMainBinding;
 
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         checkPermissions();
 
-        fitnessDataResponse = new FitnessDataResponse();
+        fitnessDataResponseModel = new FitnessDataResponseModel();
     }
 
     private void checkPermissions() {
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
                     fitnessOptions);
         } else {
             getTodayData();
+            new Handler(Looper.getMainLooper()).postDelayed(this::getTodayData,3000);
         }
 
     }
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
         cal.setTime(new Date());
         long endTime = cal.getTimeInMillis();
 
-        cal.set(2014, 9, 28);
+        cal.set(2019, 3, 1);
         cal.set(Calendar.HOUR_OF_DAY, 0); //so it get all day and not the current hour
         cal.set(Calendar.MINUTE, 0); //so it get all day and not the current minute
         cal.set(Calendar.SECOND, 0); //so it get all day and not the current second
@@ -213,15 +216,14 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
                 Log.e(TAG, " data : " + value);
 
                 if (field.getName().equals(Field.FIELD_STEPS.getName())) {
-                    fitnessDataResponse.steps = value+fitnessDataResponse.steps;
+                    fitnessDataResponseModel.steps = Float.parseFloat(new DecimalFormat("#.##").format( value+ fitnessDataResponseModel.steps));
                 } else if (field.getName().equals(Field.FIELD_CALORIES.getName())) {
-                    fitnessDataResponse.calories = value+fitnessDataResponse.calories;
+                    fitnessDataResponseModel.calories = Float.parseFloat(new DecimalFormat("#.##").format( value+ fitnessDataResponseModel.calories));
                 } else if (field.getName().equals(Field.FIELD_DISTANCE.getName())) {
-                    fitnessDataResponse.distance = value+fitnessDataResponse.distance;
+                    fitnessDataResponseModel.distance = Float.parseFloat(new DecimalFormat("#.##").format( value+ fitnessDataResponseModel.distance));
                 }
-
             }
         }
-        activityMainBinding.setFitnessData(fitnessDataResponse);
+        activityMainBinding.setFitnessData(fitnessDataResponseModel);
     }
 }

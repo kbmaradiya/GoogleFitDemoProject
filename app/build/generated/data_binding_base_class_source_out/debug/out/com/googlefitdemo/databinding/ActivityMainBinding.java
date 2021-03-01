@@ -14,7 +14,7 @@ import androidx.constraintlayout.widget.Guideline;
 import androidx.databinding.Bindable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
-import com.googlefitdemo.FitnessDataResponse;
+import com.googlefitdemo.FitnessDataResponseModel;
 import com.googlefitdemo.R;
 import java.lang.Deprecated;
 import java.lang.Object;
@@ -90,7 +90,7 @@ public abstract class ActivityMainBinding extends ViewDataBinding {
   public final TextView txtStepsValue;
 
   @Bindable
-  protected FitnessDataResponse mFitnessData;
+  protected FitnessDataResponseModel mFitnessData;
 
   protected ActivityMainBinding(Object _bindingComponent, View _root, int _localFieldCount,
       Guideline guideline, ImageView imgCalories, ImageView imgDistance,
@@ -127,10 +127,10 @@ public abstract class ActivityMainBinding extends ViewDataBinding {
     this.txtStepsValue = txtStepsValue;
   }
 
-  public abstract void setFitnessData(@Nullable FitnessDataResponse fitnessData);
+  public abstract void setFitnessData(@Nullable FitnessDataResponseModel fitnessData);
 
   @Nullable
-  public FitnessDataResponse getFitnessData() {
+  public FitnessDataResponseModel getFitnessData() {
     return mFitnessData;
   }
 

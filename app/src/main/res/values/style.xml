@@ -22,6 +22,7 @@
     <style name="right_top_image" parent="widthW_heightW">
         <item name="android:elevation">@dimen/dp_20</item>
         <item name="android:padding">@dimen/dp_16</item>
+        <item name="android:visibility">invisible</item>
     </style>
 
 

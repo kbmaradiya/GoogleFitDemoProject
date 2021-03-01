@@ -6429,6 +6429,7 @@
     </style><style name="right_top_image" parent="widthW_heightW">
         <item name="android:elevation">@dimen/dp_20</item>
         <item name="android:padding">@dimen/dp_16</item>
+        <item name="android:visibility">invisible</item>
     </style><style name="today_label_image" parent="widthW_heightW">
         <item name="android:layout_marginRight">@dimen/dp_10</item>
         <item name="android:elevation">@dimen/dp_20</item>

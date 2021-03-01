@@ -6,7 +6,7 @@
 
         <variable
             name="fitnessData"
-            type="com.googlefitdemo.FitnessDataResponse" />
+            type="com.googlefitdemo.FitnessDataResponseModel" />
     </data>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/rootLayout"
