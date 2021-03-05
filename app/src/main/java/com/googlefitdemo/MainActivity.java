@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -18,10 +19,15 @@ import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.Bucket;
 import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
+import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
+import com.google.android.gms.fitness.request.DataSourcesRequest;
+import com.google.android.gms.fitness.request.OnDataPointListener;
+import com.google.android.gms.fitness.request.SensorRequest;
 import com.google.android.gms.fitness.result.DataReadResponse;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.googlefitdemo.databinding.ActivityMainBinding;
 import com.googlefitdemo.permissionUtil.PermissionManager;
@@ -56,9 +62,19 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
         super.onCreate(savedInstanceState);
 
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        initialization();
+
         checkPermissions();
 
+    }
+
+    private void initialization() {
         fitnessDataResponseModel = new FitnessDataResponseModel();
+
+        activityMainBinding.btnLastWeekData.setOnClickListener(v -> {
+            requestForHistory();
+        });
     }
 
     private void checkPermissions() {
@@ -78,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
                 .addDataType(DataType.AGGREGATE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
                 .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
                 .addDataType(DataType.AGGREGATE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
+
                 .build();
         GoogleSignInAccount account = getGoogleAccount();
 
@@ -88,14 +105,59 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
                     account,
                     fitnessOptions);
         } else {
-            readPersonalDetails();
-            getTodayData();
-            new Handler(Looper.getMainLooper()).postDelayed(this::getTodayData,3000);
+            startDataReading();
         }
 
     }
 
+    private void startDataReading() {
+
+        getTodayData();
+
+        subscribeAndGetRealTimeData(DataType.TYPE_STEP_COUNT_DELTA);
+
+    }
+
+    /*
+     * You can subscribe specific data types
+     */
+    private void subscribeAndGetRealTimeData(DataType dataType) {
+        Fitness.getRecordingClient(this, getGoogleAccount())
+                .subscribe(dataType)
+                .addOnSuccessListener(aVoid -> {
+                    Log.e(TAG, "Subscribed");
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Failure " + e.getLocalizedMessage());
+                });
+
+        getDataUsingSensor(dataType);
+
+    }
+
+    /*
+     * Register Sensor Client to get Real Time Data
+     */
+    private void getDataUsingSensor(DataType dataType) {
+        Fitness.getSensorsClient(this, getGoogleAccount())
+                .add(new SensorRequest.Builder()
+                                .setDataType(dataType)
+                                .setSamplingRate(1, TimeUnit.SECONDS)  // sample once per minute
+                                .build(),
+                        new OnDataPointListener() {
+                            @Override
+                            public void onDataPoint(@NonNull DataPoint dataPoint) {
+                                float value = Float.parseFloat(dataPoint.getValue(Field.FIELD_STEPS).toString());
+                                fitnessDataResponseModel.steps = Float.parseFloat(new DecimalFormat("#.##").format(value + fitnessDataResponseModel.steps));
+                                activityMainBinding.setFitnessData(fitnessDataResponseModel);
+                            }
+                        }
+                );
+    }
+
+
     private void getTodayData() {
+
         Fitness.getHistoryClient(this, getGoogleAccount())
                 .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
                 .addOnSuccessListener(this);
@@ -107,17 +169,6 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
                 .addOnSuccessListener(this);
     }
 
-    private void readPersonalDetails(){
-        DataReadRequest dataReadRequest = new DataReadRequest.Builder()
-                .read(DataType.TYPE_HEIGHT)
-                .read(DataType.TYPE_WEIGHT)
-                .setLimit(1)
-                .setTimeRange(1, Calendar.getInstance().getTimeInMillis(), TimeUnit.MILLISECONDS)
-                .build();
-
-
-    }
-
 
     private void requestForHistory() {
 
@@ -125,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
         cal.setTime(new Date());
         long endTime = cal.getTimeInMillis();
 
-        cal.set(2021, 6, 1);
+        cal.set(2021, 2, 1);
         cal.set(Calendar.HOUR_OF_DAY, 0); //so it get all day and not the current hour
         cal.set(Calendar.MINUTE, 0); //so it get all day and not the current minute
         cal.set(Calendar.SECOND, 0); //so it get all day and not the current second
@@ -152,39 +203,6 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
         return GoogleSignIn.getAccountForExtension(MainActivity.this, fitnessOptions);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
-            getTodayData();
-        }
-    }
-
-    @Override
-    public void onPermissionsGranted(List<String> perms) {
-        if (perms != null && perms.size() == Permissions.LOCATION_PERMISSION.length) {
-            checkGoogleFitPermission();
-        }
-    }
-
-    @Override
-    public void onPermissionsDenied(List<String> perms) {
-        if (perms.size() > 0) {
-            PermissionManager.requestPermissions(this, this, "", Permissions.LOCATION_PERMISSION);
-        }
-    }
-
-    @Override
-    public void onPermissionNeverAsked(List<String> perms) {
-        CommonUtils.openSettingForPermission(this);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionManager.onRequestPermissionsResult(this, this, requestCode, permissions, grantResults);
-    }
-
 
     @Override
     public void onSuccess(Object o) {
@@ -194,9 +212,9 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
                 getDataFromDataSet(dataSet);
             }
         } else if (o instanceof DataReadResponse) {
-            fitnessDataResponseModel.steps=0f;
-            fitnessDataResponseModel.calories=0f;
-            fitnessDataResponseModel.distance=0f;
+            fitnessDataResponseModel.steps = 0f;
+            fitnessDataResponseModel.calories = 0f;
+            fitnessDataResponseModel.distance = 0f;
             DataReadResponse dataReadResponse = (DataReadResponse) o;
             if (dataReadResponse.getBuckets() != null && !dataReadResponse.getBuckets().isEmpty()) {
                 List<Bucket> bucketList = dataReadResponse.getBuckets();
@@ -226,11 +244,11 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
                 Log.e(TAG, " data : " + value);
 
                 if (field.getName().equals(Field.FIELD_STEPS.getName())) {
-                    fitnessDataResponseModel.steps = Float.parseFloat(new DecimalFormat("#.##").format( value+ fitnessDataResponseModel.steps));
+                    fitnessDataResponseModel.steps = Float.parseFloat(new DecimalFormat("#.##").format(value + fitnessDataResponseModel.steps));
                 } else if (field.getName().equals(Field.FIELD_CALORIES.getName())) {
-                    fitnessDataResponseModel.calories = Float.parseFloat(new DecimalFormat("#.##").format( value+ fitnessDataResponseModel.calories));
+                    fitnessDataResponseModel.calories = Float.parseFloat(new DecimalFormat("#.##").format(value + fitnessDataResponseModel.calories));
                 } else if (field.getName().equals(Field.FIELD_DISTANCE.getName())) {
-                    fitnessDataResponseModel.distance = Float.parseFloat(new DecimalFormat("#.##").format( value+ fitnessDataResponseModel.distance));
+                    fitnessDataResponseModel.distance = Float.parseFloat(new DecimalFormat("#.##").format(value + fitnessDataResponseModel.distance));
                 }
             }
         }
@@ -241,20 +259,57 @@ public class MainActivity extends AppCompatActivity implements PermissionManager
 
         List<DataPoint> dataPoints = dataSet.getDataPoints();
         for (DataPoint dataPoint : dataPoints) {
+            Log.e(TAG, " data manual : " + dataPoint.getOriginalDataSource().getStreamName());
+
             for (Field field : dataPoint.getDataType().getFields()) {
 
                 float value = Float.parseFloat(dataPoint.getValue(field).toString());
                 Log.e(TAG, " data : " + value);
 
                 if (field.getName().equals(Field.FIELD_STEPS.getName())) {
-                    fitnessDataResponseModel.steps = Float.parseFloat(new DecimalFormat("#.##").format( value));
+                    fitnessDataResponseModel.steps = Float.parseFloat(new DecimalFormat("#.##").format(value));
                 } else if (field.getName().equals(Field.FIELD_CALORIES.getName())) {
-                    fitnessDataResponseModel.calories = Float.parseFloat(new DecimalFormat("#.##").format( value));
+                    fitnessDataResponseModel.calories = Float.parseFloat(new DecimalFormat("#.##").format(value));
                 } else if (field.getName().equals(Field.FIELD_DISTANCE.getName())) {
-                    fitnessDataResponseModel.distance = Float.parseFloat(new DecimalFormat("#.##").format( value));
+                    fitnessDataResponseModel.distance = Float.parseFloat(new DecimalFormat("#.##").format(value));
                 }
             }
         }
         activityMainBinding.setFitnessData(fitnessDataResponseModel);
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == GOOGLE_FIT_PERMISSIONS_REQUEST_CODE) {
+            startDataReading();
+        }
+    }
+
+    @Override
+    public void onPermissionsGranted(List<String> perms) {
+        if (perms != null && perms.size() == Permissions.LOCATION_PERMISSION.length) {
+            checkGoogleFitPermission();
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(List<String> perms) {
+        if (perms.size() > 0) {
+            PermissionManager.requestPermissions(this, this, "", Permissions.LOCATION_PERMISSION);
+        }
+    }
+
+    @Override
+    public void onPermissionNeverAsked(List<String> perms) {
+        CommonUtils.openSettingForPermission(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionManager.onRequestPermissionsResult(this, this, requestCode, permissions, grantResults);
+    }
+
 }

@@ -197,9 +197,22 @@
                         android:text="@string/steps"
                         android:textColor="@color/steps_color" />
                 </RelativeLayout>
-
             </RelativeLayout>
 
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnLastWeekData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Last Week Data"
+                android:textSize="@dimen/dp_20"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:background="@color/standing_time_color"
+                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_40"
+                app:layout_constraintTop_toBottomOf="@+id/rltRootSteps"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
